@@ -3,7 +3,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 
-def plot_wellpath(well, **kwargs):
+def plot_wellpath(well, scale_north_and_east=False, **kwargs):
     """
     Plot a 3D Wellpath.
 
@@ -90,6 +90,15 @@ def plot_wellpath(well, **kwargs):
             yaxis_title='North, ft',
             zaxis_title='TVD, ft',
             aspectmode='manual'))
+
+    if scale_north_and_east:
+        dir_min = min(result['east'].min(), result['north'].min())
+        dir_max = max(result['east'].max(), result['north'].max())
+        fig.update_layout(
+            scene=dict(
+                xaxis=dict(nticks=10, range=[dir_min, dir_max], ),
+                yaxis=dict(nticks=10, range=[dir_min, dir_max], ),
+                zaxis=dict(nticks=10, range=[0, -20000], ), ))
     fig.update_scenes(zaxis_autorange="reversed")
     fig.layout.template = style['darkMode']
     include_logo(fig, style['darkMode'], plot_type='3D', color=style['color'])
